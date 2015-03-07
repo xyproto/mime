@@ -50,6 +50,14 @@ func readMimetypes(filename string) (map[string]string, error) {
 // Returns the mimetype or an empty string if no mimetype or mimetype source is found
 func (m *MimeReader) Get(ext string) string {
 	var err error
+	if len(ext) == 0 {
+		return ""
+	} else {
+		// Strip the leading dot
+		if ext[0] == '.' {
+			ext = ext[1:]
+		}
+	}
 	if m.mimetypes == nil {
 		m.mimetypes, err = readMimetypes(m.filename)
 		if err != nil {
