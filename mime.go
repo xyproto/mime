@@ -15,16 +15,16 @@ var fallback = map[string]string{
 	"png":  "image/png",
 }
 
-type MimetypeReader struct {
+type MimeReader struct {
 	filename  string
 	utf8      bool
 	mimetypes map[string]string
 }
 
-// Create a new MimetypeReader. The filename is a list of mimetypes and extensions.
+// Create a new MimeReader. The filename is a list of mimetypes and extensions.
 // If utf8 is true, "; charset=utf-8" will be added when setting http headers.
-func New(filename string, utf8 bool) *MimetypeReader {
-	return &MimetypeReader{filename, utf8, nil}
+func New(filename string, utf8 bool) *MimeReader {
+	return &MimeReader{filename, utf8, nil}
 }
 
 // Read a mimetype text file. Return a hash map from ext to mimetype.
@@ -48,7 +48,7 @@ func readMimetypes(filename string) (map[string]string, error) {
 }
 
 // Returns the mimetype or an empty string if no mimetype or mimetype source is found
-func (m *MimetypeReader) Get(ext string) string {
+func (m *MimeReader) Get(ext string) string {
 	var err error
 	if m.mimetypes == nil {
 		m.mimetypes, err = readMimetypes(m.filename)
@@ -74,7 +74,7 @@ func (m *MimetypeReader) Get(ext string) string {
 }
 
 // Set the Content-Type for a given ResponseWriter and filename extension
-func (m *MimetypeReader) SetHeader(w http.ResponseWriter, ext string) {
+func (m *MimeReader) SetHeader(w http.ResponseWriter, ext string) {
 	mimestring := m.Get(ext)
 	if m.utf8 {
 		mimestring += "; charset=utf-8"
