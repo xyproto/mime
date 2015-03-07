@@ -1,4 +1,6 @@
-#Mime [![Build Status](https://travis-ci.org/xyproto/mime.svg?branch=master)](https://travis-ci.org/xyproto/mime) [![Build Status](https://drone.io/github.com/xyproto/mime/status.png)](https://drone.io/github.com/xyproto/mime/latest) [![GoDoc](https://godoc.org/github.com/xyproto/mime?status.svg)](http://godoc.org/github.com/xyproto/mime)
+# Mime
+
+<!--#Mime [![Build Status](https://travis-ci.org/xyproto/mime.svg?branch=master)](https://travis-ci.org/xyproto/mime) [![Build Status](https://drone.io/github.com/xyproto/mime/status.png)](https://drone.io/github.com/xyproto/mime/latest) [![GoDoc](https://godoc.org/github.com/xyproto/mime?status.svg)](http://godoc.org/github.com/xyproto/mime)-->
 
 Package for retrieving the mime type given an extension.
 
