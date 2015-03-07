@@ -4,15 +4,27 @@ package mime
 import (
 	"bytes"
 	"io/ioutil"
+	"net/http"
 )
+
+var fallback = map[string]string{
+	"html": "text/html",
+	"css":  "text/css",
+	"js":   "application/javascript",
+	"txt":  "text/plain",
+	"png":  "image/png",
+}
 
 type MimetypeReader struct {
 	filename  string
+	utf8      bool
 	mimetypes map[string]string
 }
 
-func New(filename string) *MimetypeReader {
-	return &MimetypeReader{filename, nil}
+// Create a new MimetypeReader. The filename is a list of mimetypes and extensions.
+// If utf8 is true, "; charset=utf-8" will be added when setting http headers.
+func New(filename string, utf8 bool) *MimetypeReader {
+	return &MimetypeReader{filename, utf8, nil}
 }
 
 // Read a mimetype text file. Return a hash map from ext to mimetype.
@@ -41,8 +53,31 @@ func (m *MimetypeReader) Get(ext string) string {
 	if m.mimetypes == nil {
 		m.mimetypes, err = readMimetypes(m.filename)
 		if err != nil {
+			// Using the fallback hash map
+			if mime, ok := fallback[ext]; ok {
+				return mime
+			}
+			// Unable to find the mime type for the given extension
 			return ""
 		}
 	}
-	return m.mimetypes[ext]
+	// Use the value from the hash map
+	if mime, ok := m.mimetypes[ext]; ok {
+		return mime
+	}
+	// Using the fallback hash map
+	if mime, ok := fallback[ext]; ok {
+		return mime
+	}
+	// Unable to find the mime type for the given extension
+	return ""
+}
+
+// Set the Content-Type for a given ResponseWriter and filename extension
+func (m *MimetypeReader) SetHeader(w http.ResponseWriter, ext string) {
+	mimestring := m.Get(ext)
+	if m.utf8 {
+		mimestring += "; charset=utf-8"
+	}
+	w.Header().Add("Content-Type", mimestring)
 }
