@@ -3,7 +3,6 @@ package mime
 
 import (
 	"bytes"
-	"fmt"
 	"io/ioutil"
 )
 

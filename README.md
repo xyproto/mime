@@ -23,11 +23,14 @@ import (
 )
 
 func main() {
-    fmt.Println(mime.New("/etc/mime.types").Get("svg"))
+	m := mime.New("/etc/mime.types")
+	fmt.Println(m.Get("svg"))
 }
 ~~~
 
 Outputs:
+
+image/svg+xml
 
 
 General information
