@@ -7,6 +7,8 @@ import (
 	"net/http"
 )
 
+// Alternative to the "mime" package, with fallback
+
 var fallback = map[string]string{
 	"html": "text/html",
 	"css":  "text/css",
