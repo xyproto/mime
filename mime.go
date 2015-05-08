@@ -1,13 +1,13 @@
-// Package from retrieving mimetypes for extensions
+// Package mime helps retrieving mimetypes given extensions.
+// This is an alternative to the "mime" package, and has fallbacks for the most common types.
 package mime
 
 import (
 	"bytes"
 	"io/ioutil"
 	"net/http"
+	"sync"
 )
-
-// Alternative to the "mime" package, with fallback
 
 var fallback = map[string]string{
 	"html": "text/html",
@@ -15,18 +15,23 @@ var fallback = map[string]string{
 	"js":   "application/javascript",
 	"txt":  "text/plain",
 	"png":  "image/png",
+	"jpg":  "image/jpg",
+	"json": "application/javascript",
+	"svg":  "image/svg+xml",
 }
 
-type MimeReader struct {
+// Reader caches the contents of a mime info text file
+type Reader struct {
 	filename  string
 	utf8      bool
 	mimetypes map[string]string
+	mu        sync.Mutex
 }
 
-// Create a new MimeReader. The filename is a list of mimetypes and extensions.
+// New creates a new Reader. The filename is a list of mimetypes and extensions.
 // If utf8 is true, "; charset=utf-8" will be added when setting http headers.
-func New(filename string, utf8 bool) *MimeReader {
-	return &MimeReader{filename, utf8, nil}
+func New(filename string, utf8 bool) *Reader {
+	return &Reader{filename, utf8, nil, sync.Mutex{}}
 }
 
 // Read a mimetype text file. Return a hash map from ext to mimetype.
@@ -49,19 +54,20 @@ func readMimetypes(filename string) (map[string]string, error) {
 	return mimetypes, nil
 }
 
-// Returns the mimetype or an empty string if no mimetype or mimetype source is found
-func (m *MimeReader) Get(ext string) string {
+// Get returns the mimetype, or an empty string if no mimetype or mimetype source is found
+func (mr *Reader) Get(ext string) string {
 	var err error
 	if len(ext) == 0 {
 		return ""
-	} else {
-		// Strip the leading dot
-		if ext[0] == '.' {
-			ext = ext[1:]
-		}
 	}
-	if m.mimetypes == nil {
-		m.mimetypes, err = readMimetypes(m.filename)
+	// Strip the leading dot
+	if ext[0] == '.' {
+		ext = ext[1:]
+	}
+	mr.mu.Lock()
+	defer mr.mu.Unlock()
+	if mr.mimetypes == nil {
+		mr.mimetypes, err = readMimetypes(mr.filename)
 		if err != nil {
 			// Using the fallback hash map
 			if mime, ok := fallback[ext]; ok {
@@ -72,7 +78,7 @@ func (m *MimeReader) Get(ext string) string {
 		}
 	}
 	// Use the value from the hash map
-	if mime, ok := m.mimetypes[ext]; ok {
+	if mime, ok := mr.mimetypes[ext]; ok {
 		return mime
 	}
 	// Using the fallback hash map
@@ -83,10 +89,10 @@ func (m *MimeReader) Get(ext string) string {
 	return ""
 }
 
-// Set the Content-Type for a given ResponseWriter and filename extension
-func (m *MimeReader) SetHeader(w http.ResponseWriter, ext string) {
-	mimestring := m.Get(ext)
-	if m.utf8 {
+// SetHeader sets the Content-Type for a given ResponseWriter and filename extension
+func (mr *Reader) SetHeader(w http.ResponseWriter, ext string) {
+	mimestring := mr.Get(ext)
+	if mr.utf8 {
 		mimestring += "; charset=utf-8"
 	}
 	w.Header().Add("Content-Type", mimestring)
