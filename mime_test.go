@@ -8,34 +8,23 @@ import (
 
 var m = New("/etc/mime.types", true)
 
+var mimeTestTable = map[string]string{
+	"tar.xz": "application/x-xz-compressed-tar",
+	"xz": "application/x-xz",
+	"tar": "application/x-tar",
+	"tgz": "application/x-gtar-compressed",
+	"gz": "application/x-gzip",
+	"tbz2": "application/x-bzip-compressed-tar",
+	"bz2": "application/x-bzip2",
+}
+
 func TestSVG(t *testing.T) {
 	assert.Equal(t, m.Get("svg"), "image/svg+xml")
 }
 
-func TestTarXZ(t *testing.T) {
-	assert.Equal(t, m.Get("tar.xz"), "application/x-gtar-compressed")
-}
-
-func TestXZ(t *testing.T) {
-	assert.Equal(t, m.Get("xz"), "application/x-xz")
-}
-
 func TestTar(t *testing.T) {
-	assert.Equal(t, m.Get("tar"), "application/x-tar")
+	for ext, mimeType := range mimeTestTable {
+		assert.Equal(t, m.Get(ext), mimeType)
+	}
 }
 
-func TestTgz(t *testing.T) {
-	assert.Equal(t, m.Get("tgz"), "application/x-gtar-compressed")
-}
-
-func TestGz(t *testing.T) {
-	assert.Equal(t, m.Get("gz"), "application/x-gzip")
-}
-
-func TestBz2(t *testing.T) {
-	assert.Equal(t, m.Get("bz2"), "application/x-bzip2")
-}
-
-func TestTbz2(t *testing.T) {
-	assert.Equal(t, m.Get("tbz2"), "application/x-gtar-compressed")
-}

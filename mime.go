@@ -10,6 +10,17 @@ import (
 )
 
 var fallback = map[string]string{
+	"tar.gz":  "application/x-gzip-compressed-tar",
+	"tar.bz": "application/x-bzip-compressed-tar",
+	"tar.bz2": "application/x-bzip-compressed-tar",
+	"tar.xz":  "application/x-xz-compressed-tar",
+	"tgz":     "application/x-gzip-compressed-tar",
+	"tbz":     "application/x-bzip-compressed-tar",
+	"tbz2":    "application/x-bzip-compressed-tar",
+	"txz":     "application/x-xz-compressed-tar",
+	"gz":      "application/x-gzip",
+	"bz2":     "application/x-bzip2",
+	"xz":      "application/x-xz",
 	"html":    "text/html",
 	"css":     "text/css",
 	"js":      "application/javascript",
@@ -22,15 +33,6 @@ var fallback = map[string]string{
 	"rss":     "application/rss+xml",
 	"zip":     "application/zip",
 	"tar":     "application/x-tar",
-	"gz":      "application/x-gzip",
-	"tar.gz":  "application/x-gtar-compressed",
-	"tgz":     "application/x-gtar-compressed",
-	"bz2":     "application/x-bzip2",
-	"tar.bz2": "application/x-gtar-compressed",
-	"tbz2":    "application/x-gtar-compressed",
-	"xz":      "application/x-xz",
-	"tar.xz":  "application/x-gtar-compressed",
-	"txz":     "application/x-gtar-compressed",
 }
 
 // Reader caches the contents of a mime info text file
@@ -105,6 +107,10 @@ func (mr *Reader) Get(ext string) string {
 // SetHeader sets the Content-Type for a given ResponseWriter and filename extension
 func (mr *Reader) SetHeader(w http.ResponseWriter, ext string) {
 	mimestring := mr.Get(ext)
+	if mimestring == "" {
+		// Default mime type
+		mimestring = "application/octet-stream"
+	}
 	if mr.utf8 {
 		mimestring += "; charset=utf-8"
 	}
