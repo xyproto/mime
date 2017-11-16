@@ -10,14 +10,27 @@ import (
 )
 
 var fallback = map[string]string{
-	"html": "text/html",
-	"css":  "text/css",
-	"js":   "application/javascript",
-	"txt":  "text/plain",
-	"png":  "image/png",
-	"jpg":  "image/jpg",
-	"json": "application/javascript",
-	"svg":  "image/svg+xml",
+	"html":    "text/html",
+	"css":     "text/css",
+	"js":      "application/javascript",
+	"txt":     "text/plain",
+	"png":     "image/png",
+	"jpg":     "image/jpg",
+	"json":    "application/javascript",
+	"svg":     "image/svg+xml",
+	"xml":     "text/xml",
+	"rss":     "application/rss+xml",
+	"zip":     "application/zip",
+	"tar":     "application/x-tar",
+	"gz":      "application/x-gzip",
+	"tar.gz":  "application/x-gtar-compressed",
+	"tgz":     "application/x-gtar-compressed",
+	"bz2":     "application/x-bzip2",
+	"tar.bz2": "application/x-gtar-compressed",
+	"tbz2":    "application/x-gtar-compressed",
+	"xz":      "application/x-xz",
+	"tar.xz":  "application/x-gtar-compressed",
+	"txz":     "application/x-gtar-compressed",
 }
 
 // Reader caches the contents of a mime info text file
