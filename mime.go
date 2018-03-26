@@ -11,7 +11,7 @@ import (
 
 var fallback = map[string]string{
 	"tar.gz":  "application/x-gzip-compressed-tar",
-	"tar.bz": "application/x-bzip-compressed-tar",
+	"tar.bz":  "application/x-bzip-compressed-tar",
 	"tar.bz2": "application/x-bzip-compressed-tar",
 	"tar.xz":  "application/x-xz-compressed-tar",
 	"tgz":     "application/x-gzip-compressed-tar",
@@ -72,8 +72,9 @@ func readMimetypes(filename string) (map[string]string, error) {
 // Get returns the mimetype, or an empty string if no mimetype or mimetype source is found
 func (mr *Reader) Get(ext string) string {
 	var err error
+	// No extension, suggest text/plain (README, LICENSE etc)
 	if len(ext) == 0 {
-		return ""
+		return "text/plain"
 	}
 	// Strip the leading dot
 	if ext[0] == '.' {

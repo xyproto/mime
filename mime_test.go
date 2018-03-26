@@ -6,16 +6,16 @@ import (
 	"testing"
 )
 
-var m = New("/etc/mime.types", true)
+var m = New("testconf/mime.types", true)
 
 var mimeTestTable = map[string]string{
 	"tar.xz": "application/x-xz-compressed-tar",
-	"xz": "application/x-xz",
-	"tar": "application/x-tar",
-	"tgz": "application/x-gtar-compressed",
-	"gz": "application/x-gzip",
-	"tbz2": "application/x-bzip-compressed-tar",
-	"bz2": "application/x-bzip2",
+	"xz":     "application/x-xz",
+	"tar":    "application/x-tar",
+	"tgz":    "application/gzip",
+	"gz":     "application/gzip",
+	"tbz2":   "application/x-bzip-compressed-tar",
+	"bz2":    "application/x-bzip2",
 }
 
 func TestSVG(t *testing.T) {
@@ -27,4 +27,3 @@ func TestTar(t *testing.T) {
 		assert.Equal(t, m.Get(ext), mimeType)
 	}
 }
-
