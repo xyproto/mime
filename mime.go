@@ -72,9 +72,9 @@ func readMimetypes(filename string) (map[string]string, error) {
 // Get returns the mimetype, or an empty string if no mimetype or mimetype source is found
 func (mr *Reader) Get(ext string) string {
 	var err error
-	// No extension, suggest text/plain (README, LICENSE etc)
+	// No extension
 	if len(ext) == 0 {
-		return "text/plain"
+		return ""
 	}
 	// Strip the leading dot
 	if ext[0] == '.' {
