@@ -142,5 +142,5 @@ func (mr *Reader) SetHeader(w http.ResponseWriter, ext string) {
 	if mr.utf8 && !strings.Contains(mimestring, "wasm") && !strings.Contains(mimestring, "image") {
 		mimestring += "; charset=utf-8"
 	}
-	w.Header().Add("Content-Type", mimestring)
+	w.Header().Set("Content-Type", mimestring)
 }
